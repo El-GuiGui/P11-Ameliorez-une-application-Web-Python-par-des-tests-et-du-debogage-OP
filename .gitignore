@@ -1,0 +1,29 @@
+# Ignore directories
+env/
+
+
+# not ignore main.py
+!main.py
+!server.py
+!clubs.json
+!competitions.json
+
+
+# not ignore specific files
+!instruction_project.md
+!README.md
+!requirements.txt
+!pyproject.toml
+!setup.cfg
+
+
+
+
+# other
+bin
+include
+lib
+.Python
+tests/
+.envrc
+__pycache__
