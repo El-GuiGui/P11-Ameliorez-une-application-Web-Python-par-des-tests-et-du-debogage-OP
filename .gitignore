@@ -1,6 +1,6 @@
 # Ignore directories
 env/
-
+.pytest_cache
 
 # not ignore main.py
 !main.py
