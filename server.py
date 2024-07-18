@@ -61,16 +61,30 @@ def purchasePlaces():
     if competition and club:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if competition["date"] > current_time:
-            points_required = placesRequired
-            club_points = int(club["points"])
-            competition_places = int(competition["numberOfPlaces"])
-
-            if club_points >= points_required:
-                competition["numberOfPlaces"] = competition_places - placesRequired
-                club["points"] = club_points - points_required
-                flash("Great-booking complete!")
+            if placesRequired > 12:
+                flash("You cannot book more than 12 places.")
             else:
-                flash("Not enough points to complete the booking.")
+                points_required = placesRequired
+                club_points = int(club["points"])
+                competition_places = int(competition["numberOfPlaces"])
+
+                if "bookings" not in competition:
+                    competition["bookings"] = {}
+
+                if club["name"] not in competition["bookings"]:
+                    competition["bookings"][club["name"]] = 0
+
+                total_booked_places = competition["bookings"][club["name"]] + placesRequired
+
+                if total_booked_places > 12:
+                    flash("You cannot book more than 12 places in total for this competition.")
+                elif club_points >= points_required:
+                    competition["numberOfPlaces"] = competition_places - placesRequired
+                    club["points"] = club_points - points_required
+                    competition["bookings"][club["name"]] = total_booked_places
+                    flash("Great-booking complete!")
+                else:
+                    flash("Not enough points to complete the booking.")
         else:
             flash("This competition is in the past and cannot be booked.")
     else:
