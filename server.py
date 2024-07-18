@@ -1,5 +1,6 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
+from datetime import datetime
 
 
 def loadClubs():
@@ -32,18 +33,23 @@ def showSummary():
     if club is None:
         flash("Sorry, that email wasn't found.")
         return redirect(url_for("index"))
-    return render_template("welcome.html", club=club, competitions=competitions)
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return render_template("welcome.html", club=club, competitions=competitions, current_time=current_time)
 
 
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
-    foundClub = [c for c in clubs if c["name"] == club][0]
-    foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    foundClub = next((c for c in clubs if c["name"] == club), None)
+    foundCompetition = next((c for c in competitions if c["name"] == competition), None)
     if foundClub and foundCompetition:
-        return render_template("booking.html", club=foundClub, competition=foundCompetition)
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if foundCompetition["date"] > current_time:
+            return render_template("booking.html", club=foundClub, competition=foundCompetition)
+        else:
+            flash("This competition is in the past and cannot be booked.")
     else:
-        flash("Something went wrong-please try again")
-        return render_template("welcome.html", club=club, competitions=competitions)
+        flash("Something went wrong-please try again.")
+    return render_template("welcome.html", club=foundClub, competitions=competitions, current_time=current_time)
 
 
 @app.route("/purchasePlaces", methods=["POST"])
@@ -53,20 +59,24 @@ def purchasePlaces():
     placesRequired = int(request.form["places"])
 
     if competition and club:
-        points_required = placesRequired
-        club_points = int(club["points"])
-        competition_places = int(competition["numberOfPlaces"])
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if competition["date"] > current_time:
+            points_required = placesRequired
+            club_points = int(club["points"])
+            competition_places = int(competition["numberOfPlaces"])
 
-        if club_points >= points_required:
-            competition["numberOfPlaces"] = competition_places - placesRequired
-            club["points"] = club_points - points_required
-            flash("Great-booking complete!")
+            if club_points >= points_required:
+                competition["numberOfPlaces"] = competition_places - placesRequired
+                club["points"] = club_points - points_required
+                flash("Great-booking complete!")
+            else:
+                flash("Not enough points to complete the booking.")
         else:
-            flash("Not enough points to complete the booking.")
+            flash("This competition is in the past and cannot be booked.")
     else:
         flash("Something went wrong-please try again.")
 
-    return render_template("welcome.html", club=club, competitions=competitions)
+    return render_template("welcome.html", club=club, competitions=competitions, current_time=current_time)
 
 
 # TODO: Add route for points display
