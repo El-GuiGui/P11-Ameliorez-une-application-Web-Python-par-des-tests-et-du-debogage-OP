@@ -64,17 +64,11 @@ Güdlft est une plateforme numérique destinée à coordonner des compétitions.
 
 ## Fonctionnalités
 
-- **Gestion des Compétitions :**
-  - Visualisation des compétitions à venir.
-  - Inscription aux compétitions via l'utilisation de points accumulés.
-  - Vérification du nombre de places disponibles et des points restants.
+- **Gestion des Compétitions **
 
-- **Gestion des Utilisateurs :**
-  - Connexion pour les secrétaires de clubs.
-  - Déconnexion sécurisée.
+- **Gestion des Utilisateurs **
 
-- **Tableau des Points :**
-  - Affichage public du tableau des points des clubs.
+- **Tableau des Points **
 
 ## Rapports de Tests
 
@@ -100,5 +94,5 @@ Güdlft est une plateforme numérique destinée à coordonner des compétitions.
      ```
 
 3. **Documentation des Tests :**
-   - tests
+   - présent dans le dossier reports_test&performance
 
