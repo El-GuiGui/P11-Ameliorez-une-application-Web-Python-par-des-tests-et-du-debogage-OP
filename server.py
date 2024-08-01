@@ -61,7 +61,9 @@ def purchasePlaces():
     if competition and club:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if competition["date"] > current_time:
-            if placesRequired > 12:
+            if placesRequired <= 0:
+                flash("The number of places must be greater than 0.")
+            elif placesRequired > 12:
                 flash("You cannot book more than 12 places.")
             else:
                 points_required = placesRequired
@@ -80,6 +82,8 @@ def purchasePlaces():
                     flash("You cannot book more than 12 places in total for this competition.")
                 elif points_required > club_points:
                     flash("Not enough points to complete the booking.")
+                elif placesRequired > competition_places:
+                    flash("Not enough places available in the competition.")
                 else:
                     competition["numberOfPlaces"] = competition_places - placesRequired
                     club["points"] = club_points - points_required
